@@ -1,0 +1,15 @@
+{
+  "name": "fxa-gecko-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/marionette-mocha --buildapp desktop --runtime /Applications/FirefoxNightly.app/Contents/MacOS/firefox tests/basic.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "marionette-client": "^1.7.5",
+    "marionette-js-runner": "^1.0.15"
+  }
+}
