@@ -1,8 +1,11 @@
 marionette('github.com', function() {
   var github = 'http://github.com';
 
-  // no options are required by default.
-  var client = marionette.client();
+  var client = marionette.client({
+    prefs: {
+      'browser.shell.checkDefaultBrowser': false
+    }
+  });
 
   setup(function() {
     client.goUrl(github);
