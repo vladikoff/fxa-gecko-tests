@@ -1,15 +1,15 @@
 {
   "name": "fxa-gecko-tests",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "FxA Gecko Integration Tests",
   "scripts": {
-    "test": "node_modules/.bin/marionette-mocha --buildapp desktop --runtime /Applications/FirefoxNightly.app/Contents/MacOS/firefox tests/basic.js"
+    "test": "./run-tests.sh"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "marionette-client": "^1.7.5",
-    "marionette-js-runner": "^1.0.15"
+  "author": "Mozilla",
+  "license": "MPL",
+  "dependencies": {
+    "marionette-client": "1.7.5",
+    "marionette-firefox-host": "1.0.2",
+    "marionette-js-runner": "1.0.15"
   }
 }

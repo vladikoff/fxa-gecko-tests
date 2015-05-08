@@ -9,9 +9,6 @@ marionette('github.com', function() {
   });
 
   test('logging into github', function() {
-    client.executeScript(function() {
-        alert(document.title);
-        console.log(document.title);
-      })
+    // do stuff with the client
   });
-})
+});
