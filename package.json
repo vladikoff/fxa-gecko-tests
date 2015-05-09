@@ -8,7 +8,10 @@
   "author": "Mozilla",
   "license": "MPL",
   "dependencies": {
+    "chai": "^2.3.0",
     "marionette-firefox-host": "1.0.3",
-    "marionette-js-runner": "1.0.15"
+    "marionette-helper": "^0.3.1",
+    "marionette-js-runner": "1.0.15",
+    "promise": "^7.0.1"
   }
 }
