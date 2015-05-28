@@ -13,6 +13,7 @@
     "marionette-firefox-host": "1.0.3",
     "marionette-helper": "^0.3.1",
     "marionette-js-runner": "1.0.15",
-    "promise": "^7.0.1"
+    "promise": "^7.0.1",
+    "restmail-client": "1.0.0"
   }
 }

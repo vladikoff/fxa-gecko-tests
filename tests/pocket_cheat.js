@@ -3,6 +3,7 @@
 
 var chai = require('chai')
 var helper = require('marionette-helper')
+var restmail = require('restmail-client');
 
 var expect = chai.expect
 
@@ -72,7 +73,57 @@ marionette('getpocket.com', function () {
 
     // FINISHED!
     console.log('success!!!', email)
-    done()
+
+    restmail(email).then(function (messages) {
+      messages.forEach(function (message) {
+        var xlink = message.headers['x-link']
+        if (xlink) {
+          client.goUrl(xlink)
+        }
+      })
+    }).then(function () {
+      setTimeout(function () {
+        // Wait for page refresh.
+        waitForElement(client, '#password')
+
+        client
+          .findElement('#password')
+          .sendKeys(['password'])
+
+        client
+          .findElement('input.password-btn-add')
+          .click()
+
+        waitForElement(client, '.gsf_sendtips')
+
+        console.log('here?')
+
+        client
+          .findElement('.gsf_sendtips')
+          .click()
+
+          console.log('aa')
+
+        client
+          .findElement('.button')
+          .click()
+
+        console.log('bb')
+
+        waitForElement(client, '.button_container')
+
+        console.log('cc')
+
+        client
+          .findElement('.button')
+          .click()
+
+        setTimeout(done, 10000)
+      }, 5000)
+    }).catch(function (err) {
+      console.error(err)
+      done(err)
+    })
   })
 })
 
