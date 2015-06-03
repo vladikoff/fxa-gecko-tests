@@ -31,8 +31,6 @@ marionette('pocket', function () {
     client.setContext('chrome')
     // client.switchToFrame()
 
-    console.log(client.session.browserName, '-->')
-
     expect(client.session.browserName).to.equal('Firefox')
 
     client
@@ -40,14 +38,14 @@ marionette('pocket', function () {
       .findElement('#pocket-button')
       .click()
 
+    console.dir(client.getWindowType())
+
     client
       .findElement(':root')
-      .waitForElement('.signup-btn-firefox')
-      .findElement('.signup-btn-firefox')
-      .click()
-      .then(function (data) {
-        console.log('herrr')
+      .waitFor(function () {
+        client.findElement('.signup-btn-firefox')
       })
+      .click()
 
     return sleep(15000)
   })

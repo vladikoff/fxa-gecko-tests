@@ -1,11 +1,15 @@
-/*eslint-env node, mocha */
+/*eslint-env mocha */
 /*global marionette */
 
 var chai = require('chai')
 var helper = require('marionette-helper')
-var restmail = require('restmail-client');
+var restmail = require('restmail-client')
+var P = require('promise')
 
 var expect = chai.expect
+
+const POCKET_QUEUE_URL = 'https://getpocket.com/a/queue/'
+const PAGE_URL = 'https://www.nytimes.com/'
 
 marionette.plugin('helper', helper)
 marionette('getpocket.com', function () {
@@ -25,16 +29,61 @@ marionette('getpocket.com', function () {
   })
 
   test('sign up', function (done) {
+    fxaSignup(client, email).then(function () {
+      return restmail(email).then(function (messages) {
+        messages.forEach(function (message) {
+          var xlink = message.headers['x-link']
+          if (xlink) {
+            client.goUrl(xlink)
+          }
+        })
+      }).then(function () {
+        return new P(function (resolve, reject) {
+          setTimeout(function () {
+            waitForElement(client, '.gsf_sendtips')
+
+            client
+              .findElement('.gsf_sendtips')
+              .click()
+
+            client
+              .findElement('.button_container .button')
+              .click()
+
+            waitForElement(client, '.button_container')
+
+            client
+              .findElement('.button_container .button')
+              .click()
+
+            resolve()
+          }, 8000)
+        })
+      }).then(function () {
+        pocketPage(client, PAGE_URL)
+      }).then(function () {
+        checkPocket(client, PAGE_URL)
+      }).then(done)
+    }).catch(function (err) {
+      console.error(err)
+      done(err)
+    })
+  })
+})
+
+function fxaSignup (client, email) {
+  return new P(function (resolve, reject) {
     const HEADER_TEXT = 'Create a Firefox Account\nto continue to Pocket'
-    const PERMISSION_TEXT = 'Pocket would like to know…'
     const SUBMIT_TEXT = 'Sign up'
-    const VERIFICATION_TEXT = 'A verification link has been sent to '
+    const PERMISSION_TEXT = 'Request for permission'
 
     // Wait for page load...
     waitForElement(client, '#fxa-signup-header')
 
-    expect(client.findElement('#fxa-signup-header').text()).to.equal(HEADER_TEXT)
-    expect(client.findElement('#submit-btn').text()).to.equal(SUBMIT_TEXT)
+    var headerText = client.findElement('#fxa-signup-header').text()
+    var submitText = client.findElement('#submit-btn').text()
+    expect(headerText).to.equal(HEADER_TEXT)
+    expect(submitText).to.equal(SUBMIT_TEXT)
 
     client
       .findElement('.email')
@@ -59,75 +108,50 @@ marionette('getpocket.com', function () {
     // Wait for page refresh...
     waitForElement(client, '#fxa-permissions-header')
 
-    expect(client.findElement('#fxa-permissions-header').text()).to.equal(PERMISSION_TEXT)
-    expect(client.findElement('#permissions').text()).to.equal('Email\n' + email)
+    var permissionText = client.findElement('#fxa-permissions-header').text()
+    expect(permissionText).to.equal(PERMISSION_TEXT)
 
     client
-      .findElement('#proceed')
+      .findElement('#accept')
       .click()
 
     // Wait for page refresh...
     waitForElement(client, '.verification-email-message')
 
-    expect(client.findElement('.verification-email-message').text()).to.equal(VERIFICATION_TEXT + email)
-
-    // FINISHED!
-    console.log('success!!!', email)
-
-    restmail(email).then(function (messages) {
-      messages.forEach(function (message) {
-        var xlink = message.headers['x-link']
-        if (xlink) {
-          client.goUrl(xlink)
-        }
-      })
-    }).then(function () {
-      setTimeout(function () {
-        // Wait for page refresh.
-        waitForElement(client, '#password')
-
-        client
-          .findElement('#password')
-          .sendKeys(['password'])
-
-        client
-          .findElement('input.password-btn-add')
-          .click()
-
-        waitForElement(client, '.gsf_sendtips')
-
-        console.log('here?')
-
-        client
-          .findElement('.gsf_sendtips')
-          .click()
-
-          console.log('aa')
-
-        client
-          .findElement('.button')
-          .click()
-
-        console.log('bb')
-
-        waitForElement(client, '.button_container')
-
-        console.log('cc')
-
-        client
-          .findElement('.button')
-          .click()
-
-        setTimeout(done, 10000)
-      }, 5000)
-    }).catch(function (err) {
-      console.error(err)
-      done(err)
-    })
+    resolve()
   })
-})
+}
 
-// A verification link has been sent to test0.30597378546372056@restmail.net
+function pocketPage (client, url) {
+  // Navigate to the specified URL.
+  client
+    .goUrl(url)
+
+  client
+    .setContext('chrome');
+
+  // Click the Pocket button.
+  client
+    .findElement(':root')
+    .findElement('#pocket-button')
+    .click()
+
+  client
+    .setContext('content')
+}
+
+function checkPocket (client, url) {
+  client.goUrl(POCKET_QUEUE_URL)
+
+  waitForElement(client, '.item')
+
+  var itemLinks = client.findElements('.item_link')
+  var hasLink = itemLinks.some(function (el) {
+    return el.getAttribute('href') === url
+  })
+
+  expect(hasLink).to.be.true
+}
 
 function randomEmail (domain) {
   domain = domain || 'restmail.net'
