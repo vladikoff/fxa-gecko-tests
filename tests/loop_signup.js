@@ -7,7 +7,11 @@ marionette('loop', function() {
   var client = marionette.client({
     prefs: {
       'browser.shell.checkDefaultBrowser': false,
-      'browser.uitour.enabled': false
+      'browser.uitour.enabled': false,
+      'startup.homepage_welcome_url': 'about:blank',
+      'browser.feeds.showFirstRunUI': false,
+      'devtools.chrome.enabled': true,
+      'devtools.debugger.remote-enabled': true
     }
   });
 
@@ -17,7 +21,7 @@ marionette('loop', function() {
   });
 
   setup(function() {
-    //client.goUrl('http//127.0.0.1:3030');
+    // client.goUrl('about:blank');
   });
 
   suiteTeardown(function() {
@@ -28,7 +32,7 @@ marionette('loop', function() {
     client.setContext('chrome');
     //client.switchToFrame();
 
-
+    console.log('click loop button');
     client
       .findElement(':root')
       .findElement('#loop-button')
@@ -49,7 +53,7 @@ marionette('loop', function() {
       .click()*/
 
     // Wait around for a bit to see what happens when we click hello.
-    return sleep(200000);
+    return sleep(50000000);
   });
 });
 
