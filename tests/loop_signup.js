@@ -24,6 +24,7 @@ marionette('loop', function() {
   });
 
   test('clicking on hello icon', function() {
+    console.log('change context');
     client.setContext('chrome');
     //client.switchToFrame();
 
@@ -34,8 +35,10 @@ marionette('loop', function() {
       .click()
       //.switchToFrame('chat-frame')
 
+    console.log('clicked loop button');
+
     client.findElement('#downloads-button')
-      .click()
+      //.click()
 
 
 /*
