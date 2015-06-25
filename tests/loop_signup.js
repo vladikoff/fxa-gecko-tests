@@ -3,13 +3,15 @@ var expect = require('chai').expect;
 marionette.plugin('helper', require('marionette-helper'));
 marionette('loop', function() {
   var client = marionette.client({
-    prefs: {
-      'browser.shell.checkDefaultBrowser': false,
-      'browser.uitour.enabled': false,
-      'startup.homepage_welcome_url': 'about:blank',
-      'browser.feeds.showFirstRunUI': false,
-      'devtools.chrome.enabled': true,
-      'devtools.debugger.remote-enabled': true
+    profile: {
+      prefs: {
+        'browser.shell.checkDefaultBrowser': false,
+        'browser.uitour.enabled': false,
+        'startup.homepage_welcome_url': 'about:blank',
+        'browser.feeds.showFirstRunUI': false,
+        'devtools.chrome.enabled': true,
+        'devtools.debugger.remote-enabled': true
+      }
     }
   });
 
