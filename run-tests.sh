@@ -5,5 +5,5 @@ fi
 node_modules/.bin/marionette-mocha \
   --host marionette-firefox-host \
   --runtime $RUNTIME \
-  --timeout 60s \
+  --timeout 6000s \
   tests/loop_signup.js
