@@ -60,9 +60,9 @@ marionette('getpocket.com', function () {
           }, 8000)
         })
       }).then(function () {
-        pocketPage(client, PAGE_URL)
+        savePageToPocket(client, PAGE_URL)
       }).then(function () {
-        checkPocket(client, PAGE_URL)
+        checkPocketForPage(client, PAGE_URL)
       }).then(done)
     }).catch(function (err) {
       console.error(err)
@@ -71,6 +71,12 @@ marionette('getpocket.com', function () {
   })
 })
 
+/**
+ * Signs the specified email address up to Firefox Accounts.
+ * @param  {Object} client Marionette client.
+ * @param  {String} email  [description]
+ * @return {Promise}
+ */
 function fxaSignup (client, email) {
   return new P(function (resolve, reject) {
     const HEADER_TEXT = 'Create a Firefox Account\nto continue to Pocket'
@@ -122,7 +128,13 @@ function fxaSignup (client, email) {
   })
 }
 
-function pocketPage (client, url) {
+/**
+ * Saves the specified URL to your Pocket list.
+ * @param  {Object} client Marionette client.
+ * @param  {String} url    The URL to navigate to and save.
+ * @return {undefined}
+ */
+function savePageToPocket (client, url) {
   // Navigate to the specified URL.
   client
     .goUrl(url)
@@ -140,7 +152,13 @@ function pocketPage (client, url) {
     .setContext('content')
 }
 
-function checkPocket (client, url) {
+/**
+ * Checks your Pocket items for a specific saved URL.
+ * @param  {Object} client Marionette client.
+ * @param  {String} url    A URL to check for.
+ * @return {Boolean}       Returns `true` if the specified URL was found, otherwise `false`.
+ */
+function checkPocketForPage (client, url) {
   client.goUrl(POCKET_QUEUE_URL)
 
   waitForElement(client, '.item')
@@ -151,13 +169,25 @@ function checkPocket (client, url) {
   })
 
   expect(hasLink).to.be.true
+  return hasLink
 }
 
+/**
+ * Generates a random email address.
+ * @param  {String} domain The domain for the email address. Default: "restmail.net".
+ * @return {String}        A random email address with the format `test0.0000@restmail.net`, where "0.0000" is a random number.
+ */
 function randomEmail (domain) {
   domain = domain || 'restmail.net'
   return ('test' + Math.random() + '@' + domain).trim()
 }
 
+/**
+ * Wrapper for `client.waitFor()`.
+ * @param  {Object} client Marionette client.
+ * @param  {String} el     Selector for element to wait for.
+ * @return {Object}        The element.
+ */
 function waitForElement (client, el) {
   client.waitFor(function () {
     try {

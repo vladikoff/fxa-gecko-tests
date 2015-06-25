@@ -6,4 +6,4 @@ node_modules/.bin/marionette-mocha \
   --host marionette-firefox-host \
   --runtime $RUNTIME \
   --timeout 60s \
-  tests/about_accounts_signup.js
+  tests/loop_signup.js
