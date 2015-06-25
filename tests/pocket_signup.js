@@ -5,14 +5,11 @@ var Promise = require('promise')
 var expect = require('chai').expect
 var helper = require('marionette-helper')
 
+var profile = require('../profile')
+
 marionette.plugin('helper', helper)
 marionette('pocket', function () {
-  var client = marionette.client({
-    prefs: {
-      'browser.shell.checkDefaultBrowser': false,
-      'browser.uitour.enabled': false
-    }
-  })
+  var client = marionette.client(profile)
 
   suiteSetup(function () {
     console.log('suite set up')

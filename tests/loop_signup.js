@@ -1,27 +1,15 @@
 var Promise = require('promise');
 var expect = require('chai').expect;
+var profile = require('../profile');
+
 marionette.plugin('helper', require('marionette-helper'));
 marionette('loop', function() {
-  var client = marionette.client({
-    profile: {
-      prefs: {
-        'browser.shell.checkDefaultBrowser': false,
-        'browser.uitour.enabled': false,
-        'startup.homepage_welcome_url': 'about:blank',
-        'browser.feeds.showFirstRunUI': false,
-        'devtools.chrome.enabled': true,
-        'devtools.debugger.remote-enabled': true
-      }
-    }
-  });
-
-  var url;
+  var client = marionette.client(profile);
 
   suiteSetup(function() {
   });
 
   setup(function() {
-    // client.goUrl('about:blank');
   });
 
   suiteTeardown(function() {

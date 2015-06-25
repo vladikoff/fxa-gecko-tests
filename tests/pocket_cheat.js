@@ -6,6 +6,8 @@ var helper = require('marionette-helper')
 var restmail = require('restmail-client')
 var P = require('promise')
 
+var profile = require('../profile')
+
 var expect = chai.expect
 
 const POCKET_QUEUE_URL = 'https://getpocket.com/a/queue/'
@@ -15,12 +17,7 @@ marionette.plugin('helper', helper)
 marionette('getpocket.com', function () {
   const SIGNUP_URL = 'https://getpocket.com/ff_signup'
 
-  var client = marionette.client({
-    prefs: {
-      'browser.shell.checkDefaultBrowser': false,
-      'browser.uitour.enabled': false
-    }
-  })
+  var client = marionette.client(profile)
   var email
 
   setup(function () {
