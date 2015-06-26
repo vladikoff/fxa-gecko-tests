@@ -10,6 +10,6 @@ module.exports = {
     }
   },
   desiredCapabilities: {
-    raisesAccessibilityExceptions: true
+    raisesAccessibilityExceptions: false
   }
 };
