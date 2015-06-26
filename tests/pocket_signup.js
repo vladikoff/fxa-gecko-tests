@@ -1,55 +1,56 @@
-/*eslint-env node, mocha */
-/*global marionette */
+var Promise = require('promise');
+var expect = require('chai').expect;
 
-var Promise = require('promise')
-var expect = require('chai').expect
-var helper = require('marionette-helper')
+var profile = require('../profile');
 
-var profile = require('../profile')
+marionette.plugin('helper', require('marionette-helper'));
+marionette('loop', function() {
+  var client = marionette.client(profile);
 
-marionette.plugin('helper', helper)
-marionette('pocket', function () {
-  var client = marionette.client(profile)
+  suiteSetup(function() {
+  });
 
-  suiteSetup(function () {
-    console.log('suite set up')
-  })
+  setup(function() {
+    client.setSearchTimeout(10000)
+  });
 
-  setup(function () {
-    // client.goUrl('http//127.0.0.1:3030');
-    console.log('test set up')
-  })
+  suiteTeardown(function() {
+  });
 
-  suiteTeardown(function () {
-    console.log('suite tear down')
-  })
-
-  test('clicking on pocket icon', function () {
-    client.setContext('chrome')
-    // client.switchToFrame()
-
-    expect(client.session.browserName).to.equal('Firefox')
+  test('clicking on hello icon', function() {
+    client.setContext('chrome');
 
     client
       .findElement(':root')
       .findElement('#pocket-button')
       .click()
 
-    console.dir(client.getWindowType())
 
-    client
-      .findElement(':root')
-      .waitFor(function () {
-        client.findElement('.signup-btn-firefox')
-      })
-      .click()
+    client.helper.wait(2000)
 
-    return sleep(15000)
-  })
-})
+    var iframe = client.helper.waitForElement('#pocket-panel-iframe') // '#PanelUI-popup'
+    console.log('??', iframe)
 
-function sleep (millis) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, millis)
-  })
+    console.log('tag? %s', iframe.tagName());
+    console.log('displayed? %s', iframe.displayed())
+
+    console.log('\n\n\n\n\n\n\n\n\n')
+    client.helper.wait(2000)
+    client.switchToFrame(iframe);
+
+    console.log('begin sleep: %s', new Date())
+    client.helper.wait(4000)
+    console.log('waking up: %s', new Date())
+
+    client.findElement('.signup-btn-firefox').click();
+
+    // Wait around for a bit to see what happens when we click hello.
+    return sleep(500000);
+  });
+});
+
+function sleep(millis) {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, millis);
+  });
 }
